@@ -9,6 +9,34 @@ One field ID drives the UI, extraction, validation, exports, and PDF overlay. Co
 **top-left PDF points** on 612 x 792 point pages (both pages), approximate until calibrated in
 S07 against rendered synthetic output.
 
+## S07 calibration status
+
+The raw coordinates below (and in `fieldMap.generated.ts`) are the spreadsheet's originals —
+**the PDF overlay does not draw at these coordinates directly.** `src/lib/pdf/overlayPdf.ts`
+applies a calibration on top of them, derived by rendering a complete synthetic application to
+PNG and measuring actual row-border pixel positions against it:
+
+- **Page 1**: a small additive per-section Y shift (+20pt default, +54pt for References, which
+  has an extra instruction line above its table that other sections don't).
+- **Page 2**: the raw coordinates' row spacing didn't match the real page at all (confirmed by
+  drawing a labeled 20pt ruler directly on the source PDF and rendering it) — every
+  "Other information" / "Vacancy source" / "Application" / "Declaration" field on page 2 uses an
+  explicit corrected Y (and, for a few same-line fields, X) override table in `overlayPdf.ts`,
+  read directly off programmatically-detected table borders rather than derived from the
+  spreadsheet's numbers.
+
+**Verified good** (rendered and visually inspected): Application, Education, Employment,
+Languages, References (page 1); every row of Other information, Vacancy source, Expected
+Salary/Termination Notice, and the Declaration date/signature line (page 2) all land in their
+correct row.
+
+**Known remaining imperfections** (cosmetic — values are in the correct row/box and legible,
+but not pixel-centered): Personal Particulars fields (full_name, citizenship,
+legal_right_to_work_sg) sit slightly high against their multi-line box labels;
+`supporting_information` can crowd the question text above it; the three vacancy-source
+checkbox marks can sit close to the row above. A future pass should re-run the same
+border-detection method (see `docs/SESSION_LOG.md`, S07) specifically for these.
+
 Columns: `id` | page | section | label | type | row (repeat group index) | owner |
 POC required | overlay rect `x,y,w,h` | conditional | notes.
 
