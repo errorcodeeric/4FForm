@@ -17,7 +17,7 @@ function FieldEditRow({ id, value, confidence, onChange }: FieldEditRowProps) {
   const isBoolean = meta.type === "yes_no" || meta.type === "boolean";
 
   return (
-    <div className={styles.fieldRow}>
+    <label className={styles.fieldRow}>
       <span className={styles.fieldLabel}>
         {meta.label}
         {confidence === "low" && (
@@ -49,7 +49,7 @@ function FieldEditRow({ id, value, confidence, onChange }: FieldEditRowProps) {
           onChange={(event) => onChange(id, event.target.value)}
         />
       )}
-    </div>
+    </label>
   );
 }
 
