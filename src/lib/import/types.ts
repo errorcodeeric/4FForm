@@ -16,16 +16,16 @@ const ConfidenceSchema = z.enum(["high", "medium", "low"]);
 
 /**
  * Builds a strict Zod schema for an extraction tool response: an object
- * whose only permitted keys are the fields allow-listed for `sourceKind`
- * (see allowedFields.ts), each an { value, confidence } pair typed to match
- * the field's declared type (boolean for yes_no/boolean fields, string for
- * everything else this pipeline extracts). `.strict()` means the model
- * returning a disallowed key (e.g. identity_number, or any official_* key)
- * fails validation rather than silently passing through.
+ * whose only permitted keys are the given field IDs, each an
+ * { value, confidence } pair typed to match the field's declared type
+ * (boolean for yes_no/boolean fields, string for everything else this
+ * pipeline extracts). `.strict()` means the model returning a disallowed
+ * key (e.g. an official_* key in a resume extraction) fails validation
+ * rather than silently passing through.
  */
-export function buildExtractionResultSchema(sourceKind: ImportSourceKind) {
+export function buildFieldResultSchema(fieldIds: readonly string[]) {
   const shape: Record<string, z.ZodTypeAny> = {};
-  for (const id of getExtractableFieldIds(sourceKind)) {
+  for (const id of fieldIds) {
     const meta = getFieldMeta(id);
     const valueSchema =
       meta.type === "yes_no" || meta.type === "boolean"
@@ -37,4 +37,9 @@ export function buildExtractionResultSchema(sourceKind: ImportSourceKind) {
       .optional();
   }
   return z.object(shape).strict();
+}
+
+/** Same as buildFieldResultSchema, restricted to a resume/LinkedIn allow-list. */
+export function buildExtractionResultSchema(sourceKind: ImportSourceKind) {
+  return buildFieldResultSchema(getExtractableFieldIds(sourceKind));
 }
