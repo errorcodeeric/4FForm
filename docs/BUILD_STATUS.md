@@ -16,7 +16,7 @@ test results) recorded here or in the linked session log entry.
 | S07 | PDF output | Overlay candidate data on the original PDF | Done | 107/107 tests pass; typecheck/lint/build pass; verified in production build via curl | Coordinate calibration is good but not pixel-perfect for a few fields — see docs/FIELD_MAP.md | S08 |
 | S08 | Structured output | Export candidate CSV and XLSX | Done | 133/133 tests pass; typecheck/lint/build pass; verified in production build via curl | None | S09 |
 | S09 | HR extraction | Extract completed copies of the fixed form | Done | 149/149 tests pass; typecheck/lint/build pass | Same as S04/S05: real ANTHROPIC_API_KEY not yet available | S10 |
-| S10 | HR review | Review, correct, and export extracted records | Not Started | | | S11 |
+| S10 | HR review | Review, correct, and export extracted records | Done | 159/159 tests pass; typecheck/lint/build pass; `/hr` verified rendering in dev | None | S11 |
 | S11 | Privacy & limits | Enforce transient processing and safe failures | Not Started | | | S12 |
 | S12 | Quality | Complete automated and visual test coverage | Not Started | | | S13 |
 | S13 | Deployment | Deploy the transient POC to Vercel | Not Started | | | S14 |
