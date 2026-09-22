@@ -20,7 +20,9 @@ export function CheckboxField({ id }: CheckboxFieldProps) {
         checked={checked}
         onChange={(event) => setField(id, event.target.checked)}
       />
-      <span>{meta.label}</span>
+      <span className={meta.pocRequired === "required" ? styles.labelRequired : undefined}>
+        {meta.label}
+      </span>
     </label>
   );
 }

@@ -38,7 +38,15 @@ export function YesNoDetailField({
   return (
     <div data-testid={`yesno-${answerId}`}>
       <div className={styles.yesNoRow}>
-        <span className={styles.yesNoLabel}>{meta.label}</span>
+        <span
+          className={
+            meta.pocRequired === "required"
+              ? `${styles.yesNoLabel} ${styles.labelRequired}`
+              : styles.yesNoLabel
+          }
+        >
+          {meta.label}
+        </span>
         <div className={styles.yesNoOptions}>
           <label className={styles.yesNoOption}>
             <input

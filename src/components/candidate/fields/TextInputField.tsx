@@ -17,29 +17,45 @@ interface TextInputFieldProps {
  */
 export function TextInputField({ id, placeholder }: TextInputFieldProps) {
   const meta = getFieldMeta(id);
-  const { data, setField } = useCandidateForm();
+  const { data, fieldSources, setField } = useCandidateForm();
   const value = (data as Record<string, unknown>)[id] as string | undefined;
+  const needsConfirmation = fieldSources[id]?.confidence === "low";
 
   const inputType = meta.type === "email" ? "email" : "text";
+  const controlClassName = (base: string) =>
+    needsConfirmation ? `${base} ${styles.needsConfirmation}` : base;
 
   return (
     <label className={styles.field}>
-      <span className={styles.label}>{meta.label}</span>
+      <span
+        className={
+          meta.pocRequired === "required"
+            ? `${styles.label} ${styles.labelRequired}`
+            : styles.label
+        }
+      >
+        {meta.label}
+      </span>
       {meta.type === "multiline" ? (
         <textarea
-          className={styles.textarea}
+          className={controlClassName(styles.textarea)}
           value={value ?? ""}
           placeholder={placeholder}
           onChange={(event) => setField(id, event.target.value)}
         />
       ) : (
         <input
-          className={styles.input}
+          className={controlClassName(styles.input)}
           type={inputType}
           value={value ?? ""}
           placeholder={placeholder}
           onChange={(event) => setField(id, event.target.value)}
         />
+      )}
+      {needsConfirmation && (
+        <span className={styles.needsConfirmationNote}>
+          Imported with low confidence — please verify.
+        </span>
       )}
     </label>
   );

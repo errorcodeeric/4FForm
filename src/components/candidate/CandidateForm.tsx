@@ -10,6 +10,7 @@ import { RepeatSection } from "./sections/RepeatSection";
 import { OtherInformationSection } from "./sections/OtherInformationSection";
 import { VacancySourceSection } from "./sections/VacancySourceSection";
 import { DeclarationSection } from "./sections/DeclarationSection";
+import { ReviewSection } from "./sections/ReviewSection";
 import styles from "./CandidateForm.module.css";
 
 export function CandidateForm() {
@@ -67,6 +68,7 @@ export function CandidateForm() {
       <OtherInformationSection />
       <VacancySourceSection />
       <DeclarationSection />
+      <ReviewSection />
     </div>
   );
 }

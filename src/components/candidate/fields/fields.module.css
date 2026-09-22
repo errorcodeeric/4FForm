@@ -64,3 +64,24 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+/*
+ * The asterisk is generated CSS content, not a DOM text node, so it never
+ * becomes part of an element's accessible name/label text — Testing
+ * Library's implicit label-association match (and any real label lookup)
+ * must keep matching the field's plain field-map label exactly.
+ */
+.labelRequired::after {
+  content: " *";
+  color: #b00020;
+}
+
+.needsConfirmation {
+  border-color: #c98a00 !important;
+  background: #fff9ec;
+}
+
+.needsConfirmationNote {
+  font-size: 0.75rem;
+  color: #8a5b00;
+}

@@ -12,7 +12,7 @@ test results) recorded here or in the linked session log entry.
 | S03 | Candidate | Build complete manual form UI | Done | 38/38 tests pass (incl. 10 component tests); typecheck/lint/build pass | None | S04 |
 | S04 | Candidate import | Extract resume into structured candidate data | Done | 58/58 tests pass; typecheck/lint/build pass | Real ANTHROPIC_API_KEY not yet available in this environment — fixture/mocked tests only | S05 |
 | S05 | Candidate import | Add LinkedIn-derived import without scraping | Done | 65/65 tests pass; typecheck/lint/build pass | Same as S04: real ANTHROPIC_API_KEY not yet available | S06 |
-| S06 | Candidate review | Prompt for missing and conditional fields | Not Started | | | S07 |
+| S06 | Candidate review | Prompt for missing and conditional fields | Done | 87/87 tests pass; typecheck/lint/build pass | None | S07 |
 | S07 | PDF output | Overlay candidate data on the original PDF | Not Started | | | S08 |
 | S08 | Structured output | Export candidate CSV and XLSX | Not Started | | | S09 |
 | S09 | HR extraction | Extract completed copies of the fixed form | Not Started | | | S10 |
