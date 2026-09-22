@@ -1,0 +1,43 @@
+.container {
+  border: 1px dashed #b8b8b8;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.error {
+  font-size: 0.85rem;
+  color: #b00020;
+}
+
+.conflict {
+  background: #fff7e0;
+  border: 1px solid #e5c766;
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.disclosure {
+  font-size: 0.75rem;
+  color: #777;
+}
