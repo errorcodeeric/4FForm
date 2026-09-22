@@ -46,3 +46,17 @@ Uncommitted changes: no, will be committed at end of this step.
 Next step: S02
 Exact next action: Implement the canonical Zod schema, TypeScript type, and fixed PDF overlay map per `docs/FIELD_MAP.md` and the S02 prompt in the Build Tracker tab.
 Context needed next session: None beyond this repo's docs.
+
+---
+
+## 2026-09-22 - S02 - Implement canonical schema and fixed field map
+Status: Done
+Files changed: src/lib/schema/{types.ts,fieldMap.generated.ts,build.ts,signature.ts,overlay.ts,exportKeys.ts,groups.ts,index.ts,schema.test.ts}, docs/FIELD_MAP.md
+Commands run: `npm run typecheck` -> PASS; `npm run lint` -> PASS; `npm test` -> PASS (23/23, 2 files); `npm run build` -> PASS
+Acceptance evidence: `schema.test.ts` proves (a) all 87 field IDs unique, (b) CandidateDataSchema's keys equal CANDIDATE_FIELD_IDS exactly (T02), (c) parsing a candidate payload containing an `official_*` key throws because the schema is `.strict()` (T03), (d) OfficialUseDataSchema is symmetric and rejects candidate keys, (e) every overlay rectangle fits inside 612x792pt and no `official_*` field is ever in the overlay map, (f) repeat-group and conditional-parsing helpers match the spreadsheet's row counts.
+Decisions: Generated `fieldMap.generated.ts` programmatically from the spreadsheet (via a one-off Python/openpyxl script, not committed) to avoid hand-transcription errors across 87 rows; treated the generated file as the single source every other module builds from ("one canonical ID drives UI, extraction, validation, exports, and overlay"). `CandidateDataSchema`/`OfficialUseDataSchema` are built by filtering `FIELD_MAP` by `owner` rather than hand-written, so the schema can never drift from the field list. All fields are optional at this layer (permissive "in progress" shape); conditional-requirement enforcement (Yes needs details, etc.) is deferred to S06 per the step boundary. Found and fixed a bug during generation: several `official_*` rows have X/Y/W/H recorded in the spreadsheet for documentation even though their "PDF overlay" column is `No` — `OVERLAY_MAP` now only includes a rect when that column is `Yes`, confirmed by a test that no `official_*` ID is ever in the overlay map.
+Known issues: None.
+Uncommitted changes: no, will be committed at end of this step.
+Next step: S03
+Exact next action: Build the Candidate mode sectioned form UI from the canonical schema per the S03 prompt in the Build Tracker tab.
+Context needed next session: None beyond this repo's docs.

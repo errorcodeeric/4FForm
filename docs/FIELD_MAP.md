@@ -129,3 +129,17 @@ write text into the other box.
 **Rule enforced by S02/S09 tests:** Candidate UI and candidate PDF generation must never read
 or write `official_*` fields. They are extracted only in HR mode (S09), shown only in the HR
 review grid (S10), and exported only to HR CSV/XLSX.
+
+The spreadsheet records X/Y/W/H coordinates for every `official_*` field, but its "PDF
+overlay" column is `No` for all of them — those coordinates document where the field sits on
+page 2 for HR's own reference, not a draw instruction. `src/lib/schema/overlay.ts`'s
+`OVERLAY_MAP` therefore only includes a rectangle when "PDF overlay" = `Yes`, which excludes
+every `official_*` field and `declaration_accepted`.
+
+## Code
+
+`docs/FIELD_MAP.md` (this file) is the human-readable copy. The code-facing, type-checked
+source of truth is `src/lib/schema/fieldMap.generated.ts` (generated from the spreadsheet's
+Field Map tab), consumed by `src/lib/schema/build.ts` (Zod schemas), `overlay.ts` (PDF overlay
+map), `exportKeys.ts` (CSV/XLSX header order), and `groups.ts` (repeat-group and conditional
+helpers).
