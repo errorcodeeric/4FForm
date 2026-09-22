@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCandidateForm } from "../FormContext";
 import { getFinalPdfBlockers } from "@/lib/review/classify";
+import { downloadBlob } from "./download";
 import styles from "./PdfExportSection.module.css";
 
 type Status = "idle" | "loading" | "error";
@@ -10,18 +11,6 @@ type Status = "idle" | "loading" | "error";
 interface Warning {
   readonly fieldId: string;
   readonly message: string;
-}
-
-async function downloadFromResponse(response: Response) {
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "employment-application.pdf";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
 }
 
 export function PdfExportSection() {
@@ -56,7 +45,8 @@ export function PdfExportSection() {
       }
 
       if (contentType.includes("application/pdf")) {
-        await downloadFromResponse(response);
+        const blob = await response.blob();
+        downloadBlob(blob, "employment-application.pdf");
         setWarnings([]);
         setStatus("idle");
         return;

@@ -12,6 +12,7 @@ import { VacancySourceSection } from "./sections/VacancySourceSection";
 import { DeclarationSection } from "./sections/DeclarationSection";
 import { ReviewSection } from "./sections/ReviewSection";
 import { PdfExportSection } from "./export/PdfExportSection";
+import { DataExportSection } from "./export/DataExportSection";
 import styles from "./CandidateForm.module.css";
 
 export function CandidateForm() {
@@ -70,6 +71,7 @@ export function CandidateForm() {
       <VacancySourceSection />
       <DeclarationSection />
       <ReviewSection />
+      <DataExportSection />
       <PdfExportSection />
     </div>
   );

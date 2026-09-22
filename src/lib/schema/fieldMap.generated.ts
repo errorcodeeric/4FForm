@@ -1215,7 +1215,13 @@ export const FIELD_MAP: readonly FieldMeta[] = [
     owner: "candidate",
     pocRequired: "required",
     sources: { resume: "No", linkedin: "No", manual: "Yes" },
-    exportable: false,
+    // Hand-corrected (S08): the spreadsheet's CSV/XLSX column says
+    // "Metadata only", not "Yes" — the codegen's exportable=(col==="Yes")
+    // rule mapped that to false, silently dropping this field from every
+    // export. "Metadata only" means it should still be exported, just
+    // never as raw signature bytes (see rowData.ts's signature handling,
+    // which exports only kind/capturedAt via toSignatureExportMetadata).
+    exportable: true,
     overlay: { x: 250, y: 474, w: 225, h: 25 },
     validation: "Image or typed POC signature",
     conditional: "declaration_accepted = True",
