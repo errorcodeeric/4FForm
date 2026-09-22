@@ -21,5 +21,10 @@ export {
   CANDIDATE_EXPORT_FIELD_IDS,
   OFFICIAL_EXPORT_FIELD_IDS,
 } from "./exportKeys";
-export { getRepeatGroups, parseConditional } from "./groups";
+export {
+  getRepeatGroups,
+  parseConditional,
+  getDependentFieldIds,
+} from "./groups";
 export type { RepeatGroup, ConditionalRequirement } from "./groups";
+export { getFieldMeta, getSectionFieldIds, getSections } from "./lookup";

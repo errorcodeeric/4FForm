@@ -47,3 +47,15 @@ export function parseConditional(
   if (!match) return undefined;
   return { dependsOnFieldId: match[1], equals: match[2] };
 }
+
+/**
+ * Field IDs whose conditional requirement depends on `fieldId` (e.g. the
+ * detail field(s) revealed by a Yes/No answer), in Field Map order. Used to
+ * drive detail-reveal UI directly from the field map instead of hard-coding
+ * each answer/detail pairing.
+ */
+export function getDependentFieldIds(fieldId: string): readonly string[] {
+  return (FIELD_MAP as readonly FieldMeta[])
+    .filter((f) => parseConditional(f)?.dependsOnFieldId === fieldId)
+    .map((f) => f.id);
+}

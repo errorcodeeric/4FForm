@@ -9,7 +9,7 @@ test results) recorded here or in the linked session log entry.
 | S00 | Foundation | Create resumable project control files | Done | CLAUDE.md, docs/, README.md, .env.example created | None | S01 |
 | S01 | Foundation | Scaffold the Vercel-ready app | Done | `npm install/lint/typecheck/test/build` all exit 0; `/`, `/candidate`, `/hr` render (200) | None | S02 |
 | S02 | Data model | Implement canonical schema and fixed field map | Done | 23/23 tests pass; typecheck/lint/build pass | None | S03 |
-| S03 | Candidate | Build complete manual form UI | Not Started | | | S04 |
+| S03 | Candidate | Build complete manual form UI | Done | 38/38 tests pass (incl. 10 component tests); typecheck/lint/build pass | None | S04 |
 | S04 | Candidate import | Extract resume into structured candidate data | Not Started | | | S05 |
 | S05 | Candidate import | Add LinkedIn-derived import without scraping | Not Started | | | S06 |
 | S06 | Candidate review | Prompt for missing and conditional fields | Not Started | | | S07 |

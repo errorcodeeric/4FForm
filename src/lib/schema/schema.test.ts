@@ -8,7 +8,12 @@ import {
 } from "./build";
 import { CANDIDATE_EXPORT_FIELD_IDS } from "./exportKeys";
 import { OVERLAY_MAP } from "./overlay";
-import { getRepeatGroups, parseConditional } from "./groups";
+import {
+  getDependentFieldIds,
+  getRepeatGroups,
+  parseConditional,
+} from "./groups";
+import { getFieldMeta, getSectionFieldIds, getSections } from "./lookup";
 
 describe("FIELD_MAP integrity", () => {
   it("has no duplicate field IDs", () => {
@@ -175,5 +180,47 @@ describe("conditional requirements", () => {
     for (const field of conditionalFields) {
       expect(parseConditional(field)).toBeDefined();
     }
+  });
+
+  it("finds the two dependent fields for the relatives/friends question", () => {
+    expect(getDependentFieldIds("company_contact_answer")).toEqual([
+      "company_contact_name",
+      "company_contact_department",
+    ]);
+  });
+
+  it("finds the single dependent field for a simple yes/no question", () => {
+    expect(getDependentFieldIds("bankruptcy_answer")).toEqual([
+      "bankruptcy_details",
+    ]);
+  });
+});
+
+describe("field lookup helpers", () => {
+  it("finds a known field by ID and throws for an unknown one", () => {
+    expect(getFieldMeta("full_name").label).toContain("Full name");
+    expect(() => getFieldMeta("not_a_real_field")).toThrow();
+  });
+
+  it("lists the 9 candidate sections in Field Map order, excluding official-only", () => {
+    const sections = getSections("candidate");
+    expect(sections).toEqual([
+      "Application",
+      "Personal",
+      "Education",
+      "Employment",
+      "References",
+      "Languages",
+      "Other information",
+      "Vacancy source",
+      "Declaration",
+    ]);
+    expect(sections).not.toContain("FOR OFFICIAL USE ONLY");
+  });
+
+  it("returns non-repeated fields for a section, excluding repeat-group rows", () => {
+    const personalIds = getSectionFieldIds("Personal");
+    expect(personalIds).toContain("full_name");
+    expect(personalIds).not.toContain("education_1_institution");
   });
 });
