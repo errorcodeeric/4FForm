@@ -16,7 +16,7 @@ import { DataExportSection } from "./export/DataExportSection";
 import styles from "./CandidateForm.module.css";
 
 export function CandidateForm() {
-  const { isDirty } = useCandidateForm();
+  const { isDirty, reset } = useCandidateForm();
 
   function handleBackClick(event: MouseEvent) {
     if (
@@ -29,20 +29,39 @@ export function CandidateForm() {
     }
   }
 
+  function handleReset() {
+    if (
+      window.confirm(
+        "Clear everything you've entered on this page? This cannot be undone.",
+      )
+    ) {
+      reset();
+    }
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <Link
-          href="/"
-          onClick={handleBackClick}
-          className={styles.backLink}
-        >
-          &larr; Back
-        </Link>
+        <div className={styles.headerRow}>
+          <Link
+            href="/"
+            onClick={handleBackClick}
+            className={styles.backLink}
+          >
+            &larr; Back
+          </Link>
+          <button
+            type="button"
+            onClick={handleReset}
+            className={styles.resetButton}
+          >
+            Reset
+          </button>
+        </div>
         <h1 className={styles.title}>Candidate application</h1>
         <p className={styles.subtitle}>
-          Nothing here is saved until you export — closing or reloading this
-          page discards your edits.
+          Nothing here is saved until you export — closing, reloading, or
+          resetting this page discards your edits.
         </p>
       </div>
 

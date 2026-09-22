@@ -74,6 +74,15 @@ describe("POST /api/hr/extract", () => {
     expect(extractHrFormMock).not.toHaveBeenCalled();
   });
 
+  it("rejects a file named .pdf whose content isn't actually a PDF (S11 signature check)", async () => {
+    const file = new File([Buffer.from("not really a pdf")], "fake.pdf", {
+      type: "application/pdf",
+    });
+    const response = await postWithFile(file);
+    expect(response.status).toBe(415);
+    expect(extractHrFormMock).not.toHaveBeenCalled();
+  });
+
   it("returns 503 when the server has no Anthropic configuration", async () => {
     vi.stubEnv("ANTHROPIC_API_KEY", "");
     vi.stubEnv("ANTHROPIC_MODEL", "");

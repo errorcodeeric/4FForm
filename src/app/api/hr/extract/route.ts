@@ -3,6 +3,7 @@ import { validateHrUpload } from "@/lib/hr/validateUpload";
 import { renderPagesToPng } from "@/lib/hr/renderPages";
 import { extractHrForm } from "@/lib/hr/extractForm";
 import { getAnthropicClient } from "@/lib/import/anthropicClient";
+import { hasValidPdfSignature } from "@/lib/import/fileSignature";
 
 // pdf-lib, pdf-parse rendering, and the Anthropic call all need Node APIs.
 export const runtime = "nodejs";
@@ -41,6 +42,9 @@ export async function POST(request: Request) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  if (!hasValidPdfSignature(buffer)) {
+    return errorResponse("That file's content doesn't match a PDF file.", 415);
+  }
 
   const validation = await validateHrUpload(buffer);
   if (!validation.ok) {

@@ -3,6 +3,7 @@ import {
   extractTextFromFile,
   resolveResumeMimeType,
 } from "@/lib/import/extractText";
+import { hasValidSignature } from "@/lib/import/fileSignature";
 import { runExtraction } from "@/lib/import/runExtraction";
 
 // PDF/DOCX parsing needs Node APIs — this route cannot run on the Edge runtime.
@@ -41,8 +42,14 @@ export async function POST(request: Request) {
     if (!mimeType) {
       return errorResponse("Only PDF and DOCX files are supported.", 415);
     }
+    const buffer = Buffer.from(await file.arrayBuffer());
+    if (!hasValidSignature(buffer, mimeType)) {
+      return errorResponse(
+        "That file's content doesn't match a PDF or DOCX file.",
+        415,
+      );
+    }
     try {
-      const buffer = Buffer.from(await file.arrayBuffer());
       text = await extractTextFromFile(buffer, mimeType);
     } catch {
       return errorResponse("Could not read text from that file.", 422);

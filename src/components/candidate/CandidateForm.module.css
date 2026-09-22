@@ -8,11 +8,25 @@
   margin-bottom: 1.5rem;
 }
 
-.backLink {
-  display: inline-block;
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.75rem;
+}
+
+.backLink {
   font-size: 0.9rem;
   color: #555;
+}
+
+.resetButton {
+  font-size: 0.85rem;
+  color: #b00020;
+  background: none;
+  border: 1px solid #b00020;
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
 }
 
 .title {

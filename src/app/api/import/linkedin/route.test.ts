@@ -110,4 +110,15 @@ describe("POST /api/import/linkedin", () => {
     const response = await post(formData);
     expect(response.status).toBe(413);
   });
+
+  it("rejects a file named .pdf whose content isn't actually a PDF (S11 signature check)", async () => {
+    const file = new File([Buffer.from("not really a pdf")], "fake.pdf", {
+      type: "application/pdf",
+    });
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await post(formData);
+    expect(response.status).toBe(415);
+    expect(extractFieldsMock).not.toHaveBeenCalled();
+  });
 });

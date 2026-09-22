@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HrRecordCard } from "./HrRecordCard";
 import type { HrRecord } from "./types";
 import { downloadBlob, filenameFromResponse } from "@/components/candidate/export/download";
+import { PROCESSING_FETCH_TIMEOUT_MS } from "@/lib/clientFetchTimeout";
 import styles from "./HrReviewApp.module.css";
 
 interface ExtractedField {
@@ -24,10 +25,15 @@ function toRecordData(fields: Record<string, ExtractedField>) {
 
 let nextId = 0;
 
+/** Caps a single batch so one selection can't fire an unbounded number of
+ * concurrent extraction requests (S11: "enforce file count"). */
+const MAX_BATCH_FILES = 10;
+
 export function HrReviewApp() {
   const [records, setRecords] = useState<readonly HrRecord[]>([]);
   const [exportError, setExportError] = useState<string | null>(null);
   const [exporting, setExporting] = useState<"csv" | "xlsx" | null>(null);
+  const [batchError, setBatchError] = useState<string | null>(null);
 
   function updateRecord(id: string, patch: Partial<HrRecord>) {
     setRecords((prev) =>
@@ -42,6 +48,7 @@ export function HrReviewApp() {
       const response = await fetch("/api/hr/extract", {
         method: "POST",
         body: formData,
+        signal: AbortSignal.timeout(PROCESSING_FETCH_TIMEOUT_MS),
       });
       const body = await response.json();
 
@@ -74,6 +81,14 @@ export function HrReviewApp() {
     const files = event.target.files;
     event.target.value = "";
     if (!files || files.length === 0) return;
+
+    setBatchError(null);
+    if (files.length > MAX_BATCH_FILES) {
+      setBatchError(
+        `Upload at most ${MAX_BATCH_FILES} files at a time (${files.length} selected).`,
+      );
+      return;
+    }
 
     const newRecords: HrRecord[] = [...files].map((file) => ({
       id: `record-${nextId++}`,
@@ -136,6 +151,7 @@ export function HrReviewApp() {
               officialData: r.officialData,
             })),
         }),
+        signal: AbortSignal.timeout(PROCESSING_FETCH_TIMEOUT_MS),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
@@ -181,6 +197,7 @@ export function HrReviewApp() {
             onChange={handleFilesSelected}
           />
         </label>
+        {batchError && <p className={styles.errorMessage}>{batchError}</p>}
       </div>
 
       {records.length > 0 && (

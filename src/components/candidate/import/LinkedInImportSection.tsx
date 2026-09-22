@@ -4,6 +4,7 @@ import { useState, type ChangeEvent } from "react";
 import { useCandidateForm } from "../FormContext";
 import { getFieldMeta } from "@/lib/schema";
 import type { ExtractionResult } from "@/lib/import/types";
+import { PROCESSING_FETCH_TIMEOUT_MS } from "@/lib/clientFetchTimeout";
 import styles from "./LinkedInImportSection.module.css";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -73,6 +74,7 @@ export function LinkedInImportSection() {
       const response = await fetch("/api/import/linkedin", {
         method: "POST",
         body: formData,
+        signal: AbortSignal.timeout(PROCESSING_FETCH_TIMEOUT_MS),
       });
       const payload = (await response.json()) as
         | { fields: ExtractionResult }

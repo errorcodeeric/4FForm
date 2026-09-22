@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CandidateFormProvider } from "./FormContext";
@@ -162,5 +162,38 @@ describe("CandidateForm", () => {
     const event = new Event("beforeunload", { cancelable: true });
     window.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("clears all candidate data after Reset is confirmed (T26)", async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+    renderForm();
+
+    const fullNameInput = screen.getByLabelText(
+      getFieldMeta("full_name").label,
+    ) as HTMLInputElement;
+    await user.type(fullNameInput, "Jane Tan");
+    expect(fullNameInput).toHaveValue("Jane Tan");
+
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(fullNameInput).toHaveValue("");
+
+    confirmSpy.mockRestore();
+  });
+
+  it("does not clear data if Reset is not confirmed", async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
+    renderForm();
+
+    const fullNameInput = screen.getByLabelText(
+      getFieldMeta("full_name").label,
+    ) as HTMLInputElement;
+    await user.type(fullNameInput, "Jane Tan");
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    expect(fullNameInput).toHaveValue("Jane Tan");
+
+    confirmSpy.mockRestore();
   });
 });

@@ -4,6 +4,7 @@ import { useState, type ChangeEvent } from "react";
 import { useCandidateForm } from "../FormContext";
 import { getFieldMeta } from "@/lib/schema";
 import type { ExtractionResult } from "@/lib/import/types";
+import { PROCESSING_FETCH_TIMEOUT_MS } from "@/lib/clientFetchTimeout";
 import styles from "./ResumeImportSection.module.css";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -41,6 +42,7 @@ export function ResumeImportSection() {
       const response = await fetch("/api/import/resume", {
         method: "POST",
         body,
+        signal: AbortSignal.timeout(PROCESSING_FETCH_TIMEOUT_MS),
       });
       const payload = (await response.json()) as
         | { fields: ExtractionResult }

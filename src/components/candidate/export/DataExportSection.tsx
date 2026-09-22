@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCandidateForm } from "../FormContext";
 import { getFinalPdfBlockers } from "@/lib/review/classify";
+import { PROCESSING_FETCH_TIMEOUT_MS } from "@/lib/clientFetchTimeout";
 import { downloadBlob, filenameFromResponse } from "./download";
 import styles from "./PdfExportSection.module.css";
 
@@ -30,6 +31,7 @@ export function DataExportSection() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ candidateData: data }),
+        signal: AbortSignal.timeout(PROCESSING_FETCH_TIMEOUT_MS),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
