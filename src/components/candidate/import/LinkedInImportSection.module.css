@@ -1,0 +1,82 @@
+.container {
+  border: 1px dashed #b8b8b8;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: #171717;
+  color: #fff;
+  border-color: #171717;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.textarea {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #c8c8c8;
+  border-radius: 4px;
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.error {
+  font-size: 0.85rem;
+  color: #b00020;
+}
+
+.disclosure {
+  font-size: 0.75rem;
+  color: #777;
+}
+
+.diffTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.diffTable th,
+.diffTable td {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.diffActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}

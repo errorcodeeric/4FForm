@@ -4,6 +4,7 @@ import type { MouseEvent } from "react";
 import Link from "next/link";
 import { useCandidateForm } from "./FormContext";
 import { ResumeImportSection } from "./import/ResumeImportSection";
+import { LinkedInImportSection } from "./import/LinkedInImportSection";
 import { FlatFieldsSection } from "./sections/FlatFieldsSection";
 import { RepeatSection } from "./sections/RepeatSection";
 import { OtherInformationSection } from "./sections/OtherInformationSection";
@@ -43,6 +44,7 @@ export function CandidateForm() {
       </div>
 
       <ResumeImportSection />
+      <LinkedInImportSection />
 
       <FlatFieldsSection title="Application" section="Application" />
       <FlatFieldsSection title="Personal Particulars" section="Personal" />

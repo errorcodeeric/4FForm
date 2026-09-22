@@ -3,8 +3,7 @@ import {
   extractTextFromFile,
   resolveResumeMimeType,
 } from "@/lib/import/extractText";
-import { extractFields } from "@/lib/import/extractFields";
-import { getAnthropicClient } from "@/lib/import/anthropicClient";
+import { runExtraction } from "@/lib/import/runExtraction";
 
 // PDF/DOCX parsing needs Node APIs — this route cannot run on the Edge runtime.
 export const runtime = "nodejs";
@@ -42,14 +41,6 @@ export async function POST(request: Request) {
     return errorResponse("Only PDF and DOCX files are supported.", 415);
   }
 
-  const model = process.env.ANTHROPIC_MODEL;
-  if (!process.env.ANTHROPIC_API_KEY || !model) {
-    return errorResponse(
-      "Resume extraction is not configured on this server.",
-      503,
-    );
-  }
-
   let text: string;
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -58,24 +49,14 @@ export async function POST(request: Request) {
     return errorResponse("Could not read text from that file.", 422);
   }
 
-  if (!text.trim()) {
-    return errorResponse("No readable text was found in that file.", 422);
+  const result = await runExtraction(text, "resume");
+  if (!result.ok) {
+    return errorResponse(result.message, result.status);
   }
-
-  try {
-    const fields = await extractFields({
-      client: getAnthropicClient(),
-      model,
-      text,
-      sourceKind: "resume",
-    });
-    return NextResponse.json(
-      { fields },
-      { headers: { "Cache-Control": "no-store" } },
-    );
-  } catch {
-    return errorResponse("Extraction failed. Please try again.", 502);
-  }
+  return NextResponse.json(
+    { fields: result.fields },
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }
 
 function errorResponse(message: string, status: number) {
