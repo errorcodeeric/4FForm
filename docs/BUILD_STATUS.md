@@ -20,7 +20,7 @@ test results) recorded here or in the linked session log entry.
 | S11 | Privacy & limits | Enforce transient processing and safe failures | Done | 175/175 tests pass; typecheck/lint/build pass; verified no-store headers + signature rejection against production build via curl | None | S12 |
 | S12 | Quality | Complete automated and visual test coverage | Done | 175 vitest tests + 2 Playwright E2E tests pass; typecheck/lint/build pass; Acceptance Tests tab updated (24 Pass, 2 Not Run — see notes) | None | S13 |
 | S13 | Deployment | Deploy the transient POC to Vercel | Blocked | App is deploy-ready (see below); actual deploy needs the user's own Vercel account + ANTHROPIC_API_KEY, which this environment doesn't have | Awaiting user to run `vercel`/deploy via dashboard per README.md § Deployment | S14 |
-| S14 | Demo handoff | Prepare interview demo and final checkpoint | Not Started | | | Done |
+| S14 | Demo handoff | Prepare interview demo and final checkpoint | Done | DEMO.md written; full P0 suite re-run clean (176/176 vitest + 2/2 Playwright); typecheck/lint/build pass | S13's actual deployment still pending the user — see S13 row | Done |
 
 ## Notes
 
