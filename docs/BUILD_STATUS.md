@@ -18,7 +18,7 @@ test results) recorded here or in the linked session log entry.
 | S09 | HR extraction | Extract completed copies of the fixed form | Done | 149/149 tests pass; typecheck/lint/build pass | Same as S04/S05: real ANTHROPIC_API_KEY not yet available | S10 |
 | S10 | HR review | Review, correct, and export extracted records | Done | 159/159 tests pass; typecheck/lint/build pass; `/hr` verified rendering in dev | None | S11 |
 | S11 | Privacy & limits | Enforce transient processing and safe failures | Done | 175/175 tests pass; typecheck/lint/build pass; verified no-store headers + signature rejection against production build via curl | None | S12 |
-| S12 | Quality | Complete automated and visual test coverage | Not Started | | | S13 |
+| S12 | Quality | Complete automated and visual test coverage | Done | 175 vitest tests + 2 Playwright E2E tests pass; typecheck/lint/build pass; Acceptance Tests tab updated (24 Pass, 2 Not Run — see notes) | None | S13 |
 | S13 | Deployment | Deploy the transient POC to Vercel | Not Started | | | S14 |
 | S14 | Demo handoff | Prepare interview demo and final checkpoint | Not Started | | | Done |
 
@@ -27,3 +27,17 @@ test results) recorded here or in the linked session log entry.
 - Source asset `4FS_Employment Application Form.pdf` confirmed: 2 pages, 612 x 792pt each, no
   AcroForm fields (verified with pypdf, 2026-09-22).
 - Neon / any database is intentionally excluded — see Scope & Decisions tab in the spreadsheet.
+- **Acceptance Tests tab (spreadsheet)** updated 2026-09-23: 24/26 tests Pass, 2 Not Run
+  (T21 — needs a real scanned/handwritten sample plus a live `ANTHROPIC_API_KEY`, neither
+  available in this build environment; T25 — Vercel smoke test, blocked on S13's actual
+  deployment). The spreadsheet's own COUNTA/COUNTIFS summary formulas on the Overview tab were
+  not re-cached (no LibreOffice available in this environment to recalculate) — they will
+  compute correctly the next time the file is opened in Excel/Google Sheets, since the
+  formulas themselves are unchanged, only their inputs.
+- A genuine, previously-undiscovered bug was found and fixed while writing S12's Playwright
+  browser tests: `HrReviewApp`'s multi-file upload handler captured a `FileList` reference,
+  then cleared the input's `value` (to allow re-selecting the same filename later) — clearing
+  a file input's `value` in Chromium also empties any `FileList` object already obtained from
+  it, silently discarding every selected file. Fixed by converting to a plain array
+  (`Array.from`) before clearing. This affected real users, not just the test — see
+  SESSION_LOG.md S12 for the debugging trail.

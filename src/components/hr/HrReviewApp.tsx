@@ -78,9 +78,13 @@ export function HrReviewApp() {
   }
 
   function handleFilesSelected(event: ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files;
+    // Capture as a plain array BEFORE clearing value: clearing a file
+    // input's value also invalidates the FileList object obtained from
+    // it (even one already assigned to a variable) — Array.from snapshots
+    // the actual File objects first, which aren't affected by that.
+    const files = event.target.files ? Array.from(event.target.files) : [];
     event.target.value = "";
-    if (!files || files.length === 0) return;
+    if (files.length === 0) return;
 
     setBatchError(null);
     if (files.length > MAX_BATCH_FILES) {
