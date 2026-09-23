@@ -19,7 +19,7 @@ test results) recorded here or in the linked session log entry.
 | S10 | HR review | Review, correct, and export extracted records | Done | 159/159 tests pass; typecheck/lint/build pass; `/hr` verified rendering in dev | None | S11 |
 | S11 | Privacy & limits | Enforce transient processing and safe failures | Done | 175/175 tests pass; typecheck/lint/build pass; verified no-store headers + signature rejection against production build via curl | None | S12 |
 | S12 | Quality | Complete automated and visual test coverage | Done | 175 vitest tests + 2 Playwright E2E tests pass; typecheck/lint/build pass; Acceptance Tests tab updated (24 Pass, 2 Not Run — see notes) | None | S13 |
-| S13 | Deployment | Deploy the transient POC to Vercel | Not Started | | | S14 |
+| S13 | Deployment | Deploy the transient POC to Vercel | Blocked | App is deploy-ready (see below); actual deploy needs the user's own Vercel account + ANTHROPIC_API_KEY, which this environment doesn't have | Awaiting user to run `vercel`/deploy via dashboard per README.md § Deployment | S14 |
 | S14 | Demo handoff | Prepare interview demo and final checkpoint | Not Started | | | Done |
 
 ## Notes
@@ -41,3 +41,11 @@ test results) recorded here or in the linked session log entry.
   it, silently discarding every selected file. Fixed by converting to a plain array
   (`Array.from`) before clearing. This affected real users, not just the test — see
   SESSION_LOG.md S12 for the debugging trail.
+- **S13**: the user chose to deploy this themselves (has the Vercel account and the real
+  `ANTHROPIC_API_KEY`, neither available in this build environment). The app itself is fully
+  deploy-ready — `npm run build` passes, every processing route declares `runtime = "nodejs"`
+  and `maxDuration = 60`, and the source PDF is now bundled as a base64 ES module instead of a
+  runtime file read (removes a previously-flagged risk around Vercel's file-tracing behavior;
+  see SESSION_LOG.md S13). Deployment instructions are in `README.md` § Deployment. T25 (the
+  Vercel smoke test) and T21 (real scanned-form extraction, needs a live API key) remain
+  genuinely Not Run in the Acceptance Tests tab until the user deploys and smoke-tests.

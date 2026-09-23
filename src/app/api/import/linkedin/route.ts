@@ -8,6 +8,9 @@ import { runExtraction } from "@/lib/import/runExtraction";
 
 // PDF/DOCX parsing needs Node APIs — this route cannot run on the Edge runtime.
 export const runtime = "nodejs";
+// Matches the Anthropic client's own 60s request timeout (src/lib/import/anthropicClient.ts)
+// plus headroom for text extraction — Vercel's default function duration is shorter.
+export const maxDuration = 60;
 
 export const MAX_LINKEDIN_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
 export const MAX_LINKEDIN_TEXT_CHARS = 20_000;

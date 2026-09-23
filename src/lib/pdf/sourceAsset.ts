@@ -1,21 +1,19 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { SOURCE_PDF_BASE64 } from "@/assets/sourcePdfBase64.generated";
 
 let cachedBytes: Uint8Array | null = null;
 
 /**
- * Loads the immutable source PDF bundled at build time. Node-runtime only.
- * Cached in memory per server instance — this is a static asset, not
- * per-request state, so caching it doesn't conflict with the transient-data
- * policy (no candidate data is cached here).
+ * The immutable source PDF, bundled as a base64-encoded ES module
+ * (`src/assets/sourcePdfBase64.generated.ts`) rather than read from disk
+ * at runtime — a genuine `import` is unconditionally included by the
+ * bundler, removing any dependency on Next.js/Vercel's build-time file
+ * tracing correctly detecting a runtime `fs.readFile` call (see
+ * docs/SESSION_LOG.md, S13). Regenerate that file if the source PDF ever
+ * changes (it must not, per its own "immutable source asset" status, but
+ * if the file is ever legitimately replaced, re-run the base64 export).
  */
 export async function loadSourcePdfBytes(): Promise<Uint8Array> {
   if (cachedBytes) return cachedBytes;
-  const filePath = path.join(
-    process.cwd(),
-    "src/assets/4FS_Employment_Application_Form.pdf",
-  );
-  const buffer = await readFile(filePath);
-  cachedBytes = new Uint8Array(buffer);
+  cachedBytes = new Uint8Array(Buffer.from(SOURCE_PDF_BASE64, "base64"));
   return cachedBytes;
 }

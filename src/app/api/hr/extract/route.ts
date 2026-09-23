@@ -7,6 +7,9 @@ import { hasValidPdfSignature } from "@/lib/import/fileSignature";
 
 // pdf-lib, pdf-parse rendering, and the Anthropic call all need Node APIs.
 export const runtime = "nodejs";
+// Page-image rendering plus a vision request (larger payload than plain
+// text) need more headroom than the text-only import routes.
+export const maxDuration = 60;
 
 export const MAX_HR_FILE_BYTES = 8 * 1024 * 1024; // 8 MB — scans are larger than typed PDFs
 

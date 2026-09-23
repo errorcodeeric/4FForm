@@ -51,7 +51,42 @@ npm run build       # production build
 Copy `.env.example` to `.env.local` and set:
 
 - `ANTHROPIC_API_KEY` — server-only, never exposed to the client.
-- `ANTHROPIC_MODEL`
+- `ANTHROPIC_MODEL` — e.g. `claude-sonnet-5`. HR mode sends page images (vision), so pick a
+  model that supports image input.
+
+## Deployment (Vercel)
+
+No database or object storage to provision — this is close to the smallest possible Vercel
+deployment.
+
+1. **Push this repo to GitHub** (or your Git provider of choice) if it isn't already, then
+   [import it in the Vercel dashboard](https://vercel.com/new), or from the CLI:
+   ```
+   npm install -g vercel   # if you don't have it
+   vercel login
+   vercel link             # run from the repo root; creates/links a Vercel project
+   ```
+2. **Set environment variables** — in the Vercel dashboard under Project Settings →
+   Environment Variables (or `vercel env add ANTHROPIC_API_KEY` / `vercel env add
+   ANTHROPIC_MODEL` from the CLI). Add both for the environments you'll use (Preview and
+   Production). Never commit real values to `.env.local` or anywhere in the repo.
+3. **Deploy a preview**:
+   ```
+   vercel            # deploys a preview and prints its URL
+   vercel --prod     # promotes to production, once you're happy with the preview
+   ```
+4. **Smoke test the preview** before treating it as done (see `docs/BUILD_STATUS.md` / the
+   spreadsheet's Acceptance Tests tab, test T25): load `/`, walk the candidate manual-entry
+   path through a PDF/CSV/XLSX download, try one resume import, and upload a completed form in
+   HR mode. Record the preview URL and results in `docs/BUILD_STATUS.md`.
+
+Every processing route already declares `export const runtime = "nodejs"` (pdf-lib, mammoth,
+and the Anthropic SDK all need Node APIs, not the Edge runtime) and `export const maxDuration
+= 60` on the three routes that call the Anthropic API, matching Vercel's Hobby-plan function
+duration limit — if you're on a paid plan and see AI-extraction requests time out on a large
+scanned form, this is the value to raise. The source PDF is bundled as a base64-encoded ES
+module (`src/assets/sourcePdfBase64.generated.ts`), not read from disk at request time, so
+there's no dependency on Vercel's own file-tracing behavior for that asset.
 
 ## Project docs
 
